@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { ErrorMessage, Field, Form, Formik, validateYupSchema } from 'formik'
 import { Button, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/material'
 import * as Yup from "yup"
+import { useDispatch } from 'react-redux'
+import { registerUserAction } from '../../Redux/Auth/auth.action'
 
 
 const initialValues={firstName:"", lastName:"", email:"", password:"", gender:""}
@@ -9,10 +11,12 @@ const validationSchema={email: Yup.string().email("Invalid email").required("Ema
 
 const Register = () => {
   const[gender, setGender] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
     values.gender = gender
     console.log("Handle submit", values);
+    dispatch(registerUserAction({data: values}))
   }
 
   const handleChange = (event) => {
