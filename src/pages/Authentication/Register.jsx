@@ -4,6 +4,7 @@ import { Button, FormControlLabel, Radio, RadioGroup, TextField } from '@mui/mat
 import * as Yup from "yup"
 import { useDispatch } from 'react-redux'
 import { registerUserAction } from '../../Redux/Auth/auth.action'
+import { useNavigate } from 'react-router-dom'
 
 
 const initialValues={firstName:"", lastName:"", email:"", password:"", gender:""}
@@ -12,6 +13,7 @@ const validationSchema={email: Yup.string().email("Invalid email").required("Ema
 const Register = () => {
   const[gender, setGender] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = (values) => {
     values.gender = gender
@@ -63,6 +65,10 @@ const Register = () => {
           <Button sx={{padding: " .8rem 0rem"}} fullWidth type='submit' variant="contained" color='primary'>Register</Button>
         </Form>
       </Formik>
+      <div className='flex gap-2 items-center justify-center pt-5'>
+        <p>If you already have an account?</p>
+        <Button onClick={() => navigate("/login")}>Login</Button>
+      </div>
     </>
   )
 }
