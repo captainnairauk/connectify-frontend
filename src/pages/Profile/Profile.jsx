@@ -1,8 +1,10 @@
 import { Avatar, Box, Button, Card, Tab, Tabs } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import PostCard from '../../components/Post/PostCard';
 import UserReelCard from '../../components/Reels/UserReelCard';
+import { useSelector } from 'react-redux';
+import ProfileModal from './ProfileModal';
 const tabs = [
   {value:"post", name:"Post"},
   {value:"reels", name:"Reels"},
@@ -14,8 +16,11 @@ const reels = [1,1,1,1];
 const savedPost = [1,1,1,1];
 const Profile = () => {
   const {id} = useParams();
+  const [open, setOpen] = useState(false);
+  const handleOpenProfileModal = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const [value, setValue] = React.useState('post');
-
+  const {auth} = useSelector(store => store);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -28,12 +33,12 @@ const Profile = () => {
         </div>
         <div className='px-5 flex justify-between items-start mt-5 h-[5rem]'>
           <Avatar className="transform -translate-y-24" sx={{width:"10rem", height:"10rem"}} src='https://cdn.pixabay.com/photo/2019/04/17/20/18/golden-retriever-4135265_1280.jpg'/>
-          {true? <Button sx={{borderRadius:"20px"}} variant='outlined'>Edit Profile</Button>: <Button variant='outlined'>Follow</Button>}
+          {true ? (<Button sx={{borderRadius:"20px"}} variant='outlined' onClick={handleOpenProfileModal}>Edit Profile</Button>): <Button variant='outlined'>Follow</Button>}
         </div>
         <div className='p-5'>
           <div>
-            <h1 className='py-1 font-bold text-xl'>User name</h1>
-            <p>@username</p>
+            <h1 className='py-1 font-bold text-xl'>{auth.user?.firstName + " " + auth.user?.lastName}</h1>
+            <p>@{auth.user?.firstName.toLowerCase() + "_" + auth.user?.lastName.toLowerCase()}</p>
           </div>
           <div className='flex gap-5 items-center py-3'>
             <span>41 posts</span>
@@ -51,7 +56,7 @@ const Profile = () => {
               onChange={handleChange}
               aria-label="wrapped label tabs example"
             >
-              {tabs.map((item)=> <Tab value={item.value} label={item.name} wrapped />)}
+              {tabs.map((item)=> (<Tab value={item.value} label={item.name} wrapped />))}
             </Tabs>
           </Box>
           <div className='flex justify-center'>
@@ -73,8 +78,12 @@ const Profile = () => {
           </div>
         </section>
       </div>
+
+      <section>
+        <ProfileModal open={open} handleClose={handleClose}/>
+      </section>
     </Card>
-  )
-}
+  );
+};
 
 export default Profile
