@@ -29,7 +29,7 @@ const MiddlePart = () => {
   useEffect(() => {
     console.log("Fetching posts....");
     dispatch(getAllPostAction())
-  }, [])
+  }, [post.newComment])
   return (
     <div className='px-20'>
       <section className='flex items-center p-5 rounded-b-md'>
