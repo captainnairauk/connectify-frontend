@@ -3,6 +3,9 @@ import { Formik, useFormik } from 'formik';
 import React, { useState } from 'react'
 import ImageIcon from '@mui/icons-material/Image';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
+import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
+import { useDispatch } from 'react-redux';
+import { createPostAction } from '../../Redux/Post/post.action';
 
 const style = {
   position: 'absolute',
@@ -22,13 +25,22 @@ const CreatePostModal = ({open, handleClose}) => {
   const [selectedImage, setSelectedImage] = useState();
   const [selectedVideo, setSelectedVideo] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const handleSelectImage = () =>{
-
+  const handleSelectImage = async (event) =>{
+    setIsLoading(true);
+    const imageUrl = await uploadToCloudinary(event.target.files[0], "image")
+    setSelectedImage(imageUrl);
+    setIsLoading(false);
+    formik.setFieldValue("image", imageUrl)
   }
 
-  const handleSelectVideo = () => {
-
+  const handleSelectVideo = async (event) => {
+    setIsLoading(true);
+    const videoUrl = await uploadToCloudinary(event.target.files[0], "image")
+    setSelectedVideo(videoUrl);
+    setIsLoading(false);
+    formik.setFieldValue("image", videoUrl)
   }
   const formik = useFormik({
     initialValues:{
@@ -38,6 +50,7 @@ const CreatePostModal = ({open, handleClose}) => {
     },
     onSubmit:(values) => {
       console.log("formik values", values);
+      dispatch(createPostAction(values))
     }
   });
   return (
@@ -69,10 +82,11 @@ const CreatePostModal = ({open, handleClose}) => {
               <div className='flex space-x-5 items-center mt-5'>
                   <div>
                     <input type="file" accept='image/*'
-                    onChange={handleSelectImage} style={{display: "none"}}
+                    onChange={handleSelectImage}
+                    style={{display: "none"}}
                     id='image-input'/>
                     <label htmlFor="image-input">
-                      <IconButton color='primary'>
+                      <IconButton color='primary' component="span">
                         <ImageIcon/>
                       </IconButton>
                     </label>

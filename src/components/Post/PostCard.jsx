@@ -1,6 +1,6 @@
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Typography } from '@mui/material'
+import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Divider, IconButton, Typography } from '@mui/material'
 import { red } from '@mui/material/colors'
-import React from 'react'
+import React, { useState } from 'react'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -9,7 +9,9 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 
-const PostCard = () => {
+const PostCard = ({item}) => {
+  const [showComments, setShowComments] = useState(false);
+  const handleShowComment = () => setShowComments(!showComments);
   return (
     <Card className=''>
       <CardHeader
@@ -23,20 +25,18 @@ const PostCard = () => {
             <MoreVertIcon />
           </IconButton>
         }
-        title="User name"
-        subheader="@username"
+        title={item.user.firstName + " " + item.user.lastName}
+        subheader={"@"+item.user.firstName.toLowerCase() + "_" + item.user.lastName.toLowerCase()}
       />
       <CardMedia
         component="img"
         height="194"
-        image="https://cdn.pixabay.com/photo/2014/08/15/11/29/beach-418742_1280.jpg"
-        alt="beach & mountain"
+        image={item.image}
+        alt="image"
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+          {item.caption}
         </Typography>
       </CardContent>
       <CardActions className='flex justify-between' disableSpacing>
@@ -47,7 +47,7 @@ const PostCard = () => {
           <IconButton>
             {<ShareIcon/>}
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleShowComment}>
             {<ChatBubbleIcon/>}
           </IconButton>
         </div>
@@ -59,6 +59,28 @@ const PostCard = () => {
         </div>
 
       </CardActions>
+      {showComments &&  <section>
+        <div className='flex items-center space-x-5 mx-3 my-5'>
+          <Avatar sx={{}}/>
+          <input onKeyPress={(e) => {
+            if(e.key == "Enter"){
+              console.log("enter pressed -----", e.target.value)
+            }
+          }} className='w-full outline-none bg-transparent border border-[#3b4054] rounded-full px-5 py-2 ' type="text" placeholder='write your comment...' />
+        </div>
+        <Divider/>
+        <div className='mx-3 space-y-2 my-5 text-xs'>
+          <div className='flex justify-between items-center'>
+            <div className='flex items-center space-x-5'>
+              <Avatar sx={{height:"2rem", width:"2rem", fontSize:"0.8rem"}}>
+                C
+              </Avatar>
+              <p>nice image</p>
+            </div>
+
+          </div>
+        </div>
+      </section>}
     </Card>
   )
 }
