@@ -1,29 +1,42 @@
 import { Avatar, Card, CardHeader } from '@mui/material';
-import React from 'react'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { searchUser } from '../../Redux/Auth/auth.action';
+import { store } from '../../Redux/store';
+import { createChat } from '../../Redux/Message/message.action';
 
 const SearchUser = () => {
-  const handleSearchUser = () => {
-    console.log("search user....");
+  const [username, setUsername] = useState("");
+  const dispatch = useDispatch();
+  const {message, auth} = useSelector(store => store);
+
+  const handleSearchUser = (e) => {
+    setUsername(e.target.value)
+    console.log("search user....", auth.searchUser);
+    dispatch(searchUser(username))
   }
   const handleClick = (id) => {
-    console.log(id);
+    dispatch(createChat({userId: id}))
   }
   return (
     <div>
       <div className='py-5 relative'>
         <input className='bg-transparent border border-[#3b4054] outline-none w-full px-5 py-3 rounded-full' placeholder='search user...' onChange={handleSearchUser} type="text" />
+        {
+        username && (
+          auth.searchUser.map((item) => <Card key = {item.id} className='absolute w-full z-10 top-[4.5rem] cursor-pointer'>
+          <CardHeader onClick={() => {
+            handleClick(item.id)
+            setUsername("")
+          }}
+          avatar={<Avatar src='https://images.pexels.com/photos/4417069/pexels-photo-4417069.jpeg?auto=compress&cs=tinysrgb&w=400'/>} title={item.firstName + " " + item.lastName}
+          subheader={item.firstName.toLowerCase() + "_" + item.lastName.toLowerCase()}
+          />
+        </Card>)
+        )}
       </div>
 
-      {
-        false && <Card>
-          <CardHeader onClick={() => {
-            handleClick()
-          }}
-          avatar={<Avatar src='https://images.pexels.com/photos/4417069/pexels-photo-4417069.jpeg?auto=compress&cs=tinysrgb&w=400'/>} title="User name"
-          subheader={"username"}
-          />
-        </Card>
-      }
+
     </div>
   )
 }

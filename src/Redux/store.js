@@ -2,10 +2,12 @@ import { thunk } from "redux-thunk";
 import { authReducer } from "./Auth/auth.reducer";
 import { applyMiddleware, combineReducers, legacy_createStore } from "redux";
 import { postReducer } from "./Post/post.reducer";
+import { messageReducer } from "./Message/message.reducer";
 
 const rootReducers = combineReducers({
   auth: authReducer,
-  post: postReducer
+  post: postReducer,
+  message: messageReducer
 })
 
 
